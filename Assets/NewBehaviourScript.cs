@@ -2,20 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        string key = "Q";
-    }
+public class NewBehaviourScript : MonoBehaviour {
 
-    // Update is called once per frame
-    void Update()
-    {
-        string key = Console.ReadLine();
-        if (key != "Q") {
-            System.Media.SoundPlayer("do.mp3").Play();
-        } 
-    }
+public AudioClip sound1;
+AudioSource audioSource;
+
+ void Start () {
+   //Componentを
+   audioSource = GetComponent<AudioSource>();
+ }
+
+ void Update () {
+   // 左
+  if (Input.GetKey (KeyCode.LeftArrow)) {
+   //音(sound1)を鳴らす
+    audioSource.PlayOneShot(sound1);
+   }
+ }
 }
