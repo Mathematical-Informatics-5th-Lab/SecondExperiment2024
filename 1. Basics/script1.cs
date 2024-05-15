@@ -36,7 +36,21 @@ public class Example : MonoBehaviour
         Finger _ring = _hand.GetRing();
         Finger _pinky = _hand.GetPinky();
         
-        Debug.Log(_thumb);
+        // Get the extended state of each finger
+        bool thumbIsExtended = _thumb.IsExtended;
+        bool indexIsExtended = _index.IsExtended;
+        bool middleIsExtended = _middle.IsExtended;
+        bool ringIsExtended = _ring.IsExtended;
+        bool pinkyIsExtended = _pinky.IsExtended;
+
+        List<bool> isExtended = new List<bool> { thumbIsExtended, indexIsExtended, middleIsExtended, ringIsExtended, pinkyIsExtended };
+
+        // Log the list of extended states
+        //Debug.Log(string.Join(", ", isExtended));
+
+        Vector3 _palmposition = _hand.PalmPosition;
+        // Log the position of palm
+        //Debug.Log(_palmposition);
     }
 }
 
