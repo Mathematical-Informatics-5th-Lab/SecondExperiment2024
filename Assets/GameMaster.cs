@@ -6,11 +6,11 @@ public class GameMaster : MonoBehaviour
 {
     public bool started = false;
     public float start_time = 0f;
-    public float speed;
+    public float speed = 5f;
     public float bpm = 120;
     int notes_num = 3;
     int[] notes_time = { 24, 28, 32 };
-    float[] notes_place = { 0f, 2f, -4f };
+    int[] notes_place = { 0, 2, 4 };
     int[] notes_type = { 0, 1, 2 };
     public float perfect = 0.05f;
     public float good = 0.10f;
@@ -19,10 +19,13 @@ public class GameMaster : MonoBehaviour
     public int good_count = 0;
     public int bad_count = 0;
 
+    public AudioClip sound1;
+    AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -30,6 +33,7 @@ public class GameMaster : MonoBehaviour
     {
         if (!started && Input.GetKeyDown(KeyCode.Space))
         {
+            audioSource.PlayOneShot(sound1);
             started = true;
             start_time = Time.time;
             for (int i = 0; i < notes_num; i++)
