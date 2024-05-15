@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class GameMaster : MonoBehaviour
 {
-    bool started = false;
-    float start_time = 0f;
+    public bool started = false;
+    public float start_time = 0f;
     public float speed;
+    public float bpm = 120;
     int notes_num = 3;
-    float[] notes_time = { 5.0f, 6.0f, 7.0f };
+    int[] notes_time = { 24, 28, 32 };
     float[] notes_place = { 0f, 2f, -4f };
+    int[] notes_type = { 0, 1, 2 };
+    public float perfect = 0.05f;
+    public float good = 0.10f;
+    public float bad = 0.15f;
+    public int perfect_count = 0;
+    public int good_count = 0;
+    public int bad_count = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -29,8 +37,9 @@ public class GameMaster : MonoBehaviour
                 GameObject obj = (GameObject)Resources.Load("Notes");
                 GameObject note = Instantiate(obj, new Vector3(20.0f, 0.0f, 0.0f), Quaternion.identity);
                 MoveNotes note_comp = note.GetComponent<MoveNotes>();
-                note_comp.time = notes_time[i] + start_time;
+                note_comp.time = (float)notes_time[i] * 15f / bpm + start_time;
                 note_comp.place = notes_place[i];
+                note_comp.type = notes_type[i];
             }
         }
         if (started)
