@@ -45,12 +45,11 @@ public class Example : MonoBehaviour
 
         List<bool> isExtended = new List<bool> { thumbIsExtended, indexIsExtended, middleIsExtended, ringIsExtended, pinkyIsExtended };
 
-        // Log the list of extended states
-        //Debug.Log(string.Join(", ", isExtended));
-
         Vector3 _palmposition = _hand.PalmPosition;
-        // Log the position of palm
-        //Debug.Log(_palmposition);
+        
+        // Combine the extended states and palm position into one log message
+        string logMessage = $"Finger extended states: {string.Join(", ", isExtended)}; Palm position: {_palmposition}";
+        Debug.Log(logMessage);
     }
 }
 
