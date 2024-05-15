@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Leap;
 using Leap.Unity;
@@ -35,7 +36,7 @@ public class Example : MonoBehaviour
         Finger _middle = _hand.GetMiddle();
         Finger _ring = _hand.GetRing();
         Finger _pinky = _hand.GetPinky();
-        
+
         // Get the extended state of each finger
         bool thumbIsExtended = _thumb.IsExtended;
         bool indexIsExtended = _index.IsExtended;
@@ -45,11 +46,15 @@ public class Example : MonoBehaviour
 
         List<bool> isExtended = new List<bool> { thumbIsExtended, indexIsExtended, middleIsExtended, ringIsExtended, pinkyIsExtended };
 
-        Vector3 _palmposition = _hand.PalmPosition;
+        // Count the number of extended fingers
+        int extendedCount = isExtended.Count(extended => extended);
+
+        // Get the palm position
+        Vector3 _palmPosition = _hand.PalmPosition;
         
         // Combine the extended states and palm position into one log message
-        string logMessage = $"Finger extended states: {string.Join(", ", isExtended)}; Palm position: {_palmposition}";
+        string logMessage = $"Finger extended states: {string.Join(", ", isExtended)}; Number of extended fingers: {extendedCount}; Palm position: {_palmPosition}";
+
         Debug.Log(logMessage);
     }
 }
-
