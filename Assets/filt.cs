@@ -43,7 +43,7 @@ public class filt : MonoBehaviour
         px = mp.x*70;
         py = mp.y*200;
         //Debug.Log(plp);
-        if(Input.GetKey(KeyCode.A))ampa=1.0F;
+        if(Input.GetKeyDown(KeyCode.Z))ampa=1.0F;
         else ampa*=0.9F;
     }
 
