@@ -166,5 +166,12 @@ cython_debug/
 .DS_Store
 
 # audio files
-*.wav
-*.mp3
+
+Library
+Logs
+Packages
+ProjectSettings
+Temp
+UserSettings
+Assembly-CSharp.csproj
+*.sln
