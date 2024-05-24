@@ -50,10 +50,13 @@ public class Example : MonoBehaviour
         int extendedCount = isExtended.Count(extended => extended);
 
         // Get the palm position
-        Vector3 _palmPosition = _hand.PalmPosition;
+        Vector3 _palmPosition = _hand.PalmPosition;// (左右, 上下, 前後)
+
+        // 手の高さが0.1以下になったら判断する
+        bool judgePalmPositionY = _palmPosition.y <= 0.1f;
         
         // Combine the extended states and palm position into one log message
-        string logMessage = $"Finger extended states: {string.Join(", ", isExtended)}; Number of extended fingers: {extendedCount}; Palm position: {_palmPosition}";
+        string logMessage = $"Finger extended states: {string.Join(", ", isExtended)}; Number of extended fingers: {extendedCount}; Palm position: {_palmPosition}; Judge palm position Y: {judgePalmPositionY}";
 
         Debug.Log(logMessage);
     }
