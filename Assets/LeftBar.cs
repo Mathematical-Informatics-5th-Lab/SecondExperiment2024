@@ -20,8 +20,6 @@ public class LeftBar : MonoBehaviour
         if (gamemaster.started)
         {
             transparency = (int)((Time.time - gamemaster.start_time) * gamemaster.bpm * 256f / 60f) % 256;
-            //Debug.Log((Time.time - gamemaster.start_time) * gamemaster.bpm);
-            //Debug.Log((int)((Time.time - gamemaster.start_time) * gamemaster.bpm / 60f));
             GetComponent<Renderer>().material.color = new Color32(201, 118, 129, (byte)transparency);
         }
     }

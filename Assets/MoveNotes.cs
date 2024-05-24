@@ -5,8 +5,7 @@ using UnityEngine;
 public class MoveNotes : MonoBehaviour
 {
     public float time = 0;
-    public float place = 0f;
-    public int type = 0;
+    public int place = 0;
     GameMaster gamemaster;
     UpDownBar updownbar;
     float speed;
@@ -22,7 +21,7 @@ public class MoveNotes : MonoBehaviour
         speed = gamemaster.speed;
         Transform myTransform = this.transform;
         Vector3 Pos = myTransform.position;
-        Pos.y = place;
+        Pos.y = place * 1.6f - 4.0f;
         myTransform.position = Pos;
     }
 
@@ -45,14 +44,20 @@ public class MoveNotes : MonoBehaviour
                         if (Mathf.Abs(time - Time.time) < gamemaster.perfect)
                         {
                             gamemaster.perfect_count++;
+                            gamemaster.judge = 0;
+                            gamemaster.judge_time = Time.time;
                         }
                         else if (Mathf.Abs(time - Time.time) < gamemaster.good)
                         {
                             gamemaster.good_count++;
+                            gamemaster.judge = 1;
+                            gamemaster.judge_time = Time.time;
                         }
                         else
                         {
                             gamemaster.bad_count++;
+                            gamemaster.judge = 2;
+                            gamemaster.judge_time = Time.time;
                         }
                     }
                 }
