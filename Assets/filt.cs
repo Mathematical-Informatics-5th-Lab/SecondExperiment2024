@@ -26,9 +26,8 @@ public class filt : MonoBehaviour
     private bool running = false;
 
     private float ampa = 0;
-    private float amps = 0;
-    private float ampd = 0;
-    private float ampf = 0;
+    private float xv = 0;
+    private float yv = 0;
 
     void Start()
     {
@@ -46,12 +45,6 @@ public class filt : MonoBehaviour
         //Debug.Log(plp);
         if(Input.GetKey(KeyCode.A))ampa=1.0F;
         else ampa*=0.9F;
-        if(Input.GetKey(KeyCode.S))amps=1.0F;
-        else amps*=0.9F;
-        if(Input.GetKey(KeyCode.D))ampd=1.0F;
-        else ampd*=0.9F;
-        if(Input.GetKey(KeyCode.F))ampf=1.0F;
-        else ampf*=0.9F;
     }
 
     float mod2pi(float p){
@@ -75,52 +68,49 @@ public class filt : MonoBehaviour
     float rectwave(float G,float A,float p,float f){
         if(0 < Mathf.Sin(p*f))return G * A;
         else return -G * A;
-    }/*
-
-    float sawwave(float G,float A,float p,float f){
-        float x=(p)/(2.0F*Mathf.PI);
-        p -= (int)(x)*(2.0F*Mathf.PI);
-        return -G * A * (-1.0F + p / Mathf.PI);
-    }*/
-    /*
-
-    float neiro1(float G,float A,float p,float f){
-        float a=sinwave(G,A,p,f*1.0F);
-        float b=rectwave(G,A,p,f*1.0F);
-
-        float c=sinwave(G,A,p+0.1F,f*2.0F);
-
-        float d=sinwave(G,A,p+0.2F,*4.0F);
-
-        float e=sinwave(G,A,p+0.2F,f*16.0F);
-        return (a*4+b*4+c*4+d+e)/13.0F;
     }
 
-    float neiro2(float G,float A,float p,float f){
-        float a=sinwave(G,A,p,f*1.0F);
-        float b=sinwave(G,A,p+0.1F,f*+2.0F);
-        float c=sinwave(G,A,p+0.2F,f*4.0F);
-        float e=sinwave(G,A,p+0.1F,f*16.0F);
-        return (a*8+b*4+c*2+e)/16.0F;
+    float sigmoid(float x,float a){
+        double p=System.Math.PI;
+        return (float)(System.Math.Tanh((double)(a*x))/p+0.5);
+    }
+    float[] disc_gauss(float sg,float sum){
+        float[] v={0,0,0,0,0};
+        float sm=0;
+        if(sum<0.01F)return v;
+        for(int i=0;i<5;i++){
+            v[i]=Mathf.Exp(-sg*i*i);
+            sm+=v[i];
+        }
+        for(int i=0;i<5;i++)v[i]*=sum/sm;
+        return v;
     }
 
-    float neiro3(float G,float A,float p,float f){
-        float a=sinwave(G,A,p,f*1.0F);
-        float b=rectwave(G,A,p+0.1F,f*2.0F);
-        float c=sinwave(G,A,p+0.2F,f*4.0F);
-        float d=rectwave(G,A,p+0.1F,f*8.0F);
-        float e=sinwave(G,A,p+0.1F,f*16.0F);
-        return (a*20+b*6+c*3+d*3+e)/29.0F;
-    }
+    float[] weight(float x,float y){
+        //zは鳴らすかどうかの判定
+        //yで重み
 
-    float neiro4(float G,float A,float p,float f){
-        float a=rectwave(G,A,p,f*1.0F);
-        float b=rectwave(G,A,p+0.1F,f*2.0F);
-        float c=sinwave(G,A,p+0.2F,f*4.0F);
-        float d=rectwave(G,A,p+0.1F,f*8.0F);
-        float e=sinwave(G,A,p+0.1F,f*16.0F);
-        return (a*6+b*3+c*3+d*3+e)/16.0F;
-    }*/
+        //-0.3で(1,0),で(0,1)
+        float w_sin = sigmoid(x,30.0F);
+        float w_rect = 1.0F - w_sin;
+
+        float[] ret={0,0,0,0,0,0,0,0,0,0};
+        if(y>0){
+            //sinの周波数帯を高くする
+            float[] v_sin=disc_gauss(0.04F/(0.04F+y),w_sin);
+            float[] v_rect=disc_gauss(1.0F,w_rect);
+            for(int i=0;i<5;i++)ret[i]=v_sin[i];
+            for(int i=0;i<5;i++)ret[5+i]=v_rect[i];
+        }
+        else{
+            //rectの音量を低くする
+            float[] v_sin=disc_gauss(1.0F/(1.0F-y),w_sin);
+            float[] v_rect=disc_gauss(0.04F/(0.04F-y),w_rect*(1.0F+y/10.0F));
+            for(int i=0;i<5;i++)ret[i]=v_sin[i];
+            for(int i=0;i<5;i++)ret[5+i]=v_rect[i];
+        }
+        return ret;
+    }
 
     float neiro0(float G,float A,float p,float f,float[] var){
         float s1=sinwave(G,A,p,f*1.0F);
@@ -140,7 +130,8 @@ public class filt : MonoBehaviour
         float v=0,vs=0;
         for(int i=0;i<10;i++){
             v+=sr[i]*var[i];
-            vs+=var[i];
+            if(i>4)vs+=3.0F*var[i];
+            else vs+=var[i];
         }
         return v/vs;
 
@@ -148,26 +139,6 @@ public class filt : MonoBehaviour
         // 8 4 2 1 1 / 0 0 0 0 0
         // 20 0 3 1 1 / 0 6 0 3 0
         // 0 0 3 1 1 / 6 3 0 3 0
-    }
-    
-    float neiro1(float G,float A,float p,float f){
-        float[] FF = {4,4,1,0,0,4,0,0,0,0};
-        return neiro0(G,A,p,f,FF);
-    }
-    
-    float neiro2(float G,float A,float p,float f){
-        float[] FF = {8,4,2,1,1,0,0,0,0,0};
-        return neiro0(G,A,p,f,FF);
-    }
-    
-    float neiro3(float G,float A,float p,float f){
-        float[] FF = {20,3,3,1,1,0,6,3,3,0};
-        return neiro0(G,A,p,f,FF);
-    }
-    
-    float neiro4(float G,float A,float p,float f){
-        float[] FF = {0,0,3,1,1,6,3,3,3,0};
-        return neiro0(G,A,p,f,FF);
     }
 
     void OnAudioFilterRead(float[] data, int channels)
@@ -179,11 +150,14 @@ public class filt : MonoBehaviour
         for (int i = 0; i < sampleCount; i++) // 必要なサンプル数だけ
         {
             float f=130.8F/24343.3F;
-            //float v = mix1(gain,amp,Mathf.PI * 2.0F * (float)(phase + i),f);
-            float v=neiro1(gain,ampa,Mathf.PI * 2.0F * (float)(phase + i),f)
-            +neiro2(gain,amps,Mathf.PI * 2.0F * (float)(phase + i),f)
-            +neiro3(gain,ampd,Mathf.PI * 2.0F * (float)(phase + i),f)
-            +neiro4(gain,ampf,Mathf.PI * 2.0F * (float)(phase + i),f);
+            if(ampa == 1.0F){
+                xv=px/50000.0F-0.5F; xv=xv*xv*xv;
+                yv=py/50000.0F-0.5F; yv=yv*yv*yv;
+            }
+            float[] wt=weight(xv,yv);
+            //Debug.Log(xv);
+            //Debug.Log(yv);
+            float v=neiro0(gain,ampa,Mathf.PI * 2.0F * (float)(phase + i),f,wt);
             
             for (int c = 0; c < channels; c++) // チャネル分コピー
             {
