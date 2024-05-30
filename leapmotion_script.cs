@@ -7,6 +7,13 @@ using Leap.Unity;
 
 public class Example : MonoBehaviour
 {
+    public float pos_y;
+    public int extendedCount;
+
+    public float pos_x;
+    public float pos_z;
+
+
     public LeapProvider leapProvider;
 
     private void OnEnable()
@@ -47,17 +54,23 @@ public class Example : MonoBehaviour
         List<bool> isExtended = new List<bool> { thumbIsExtended, indexIsExtended, middleIsExtended, ringIsExtended, pinkyIsExtended };
 
         // Count the number of extended fingers
-        int extendedCount = isExtended.Count(extended => extended);
+        extendedCount = isExtended.Count(extended => extended);
 
         // Get the palm position
-        Vector3 _palmPosition = _hand.PalmPosition;// (左右, 上下, 前後)
+        Vector3 _palmPosition = _hand.PalmPosition; // (左右, 上下, 前後)
+
+        pos_x = _palmPosition.x;
+        pos_z = _palmPosition.z;
 
         // 手の高さが0.1以下になったら判断する
         bool judgePalmPositionY = _palmPosition.y <= 0.1f;
+
+        pos_y = _palmPosition.y;
         
         // Combine the extended states and palm position into one log message
-        string logMessage = $"Finger extended states: {string.Join(", ", isExtended)}; Number of extended fingers: {extendedCount}; Palm position: {_palmPosition}; Judge palm position Y: {judgePalmPositionY}";
+        //string logMessage = $"Finger extended states: {string.Join(", ", isExtended)}; Number of extended fingers: {extendedCount}; Palm position: {_palmPosition}; Judge palm position Y: {judgePalmPositionY}";
 
-        Debug.Log(logMessage);
+        //Debug.Log(logMessage);
     }
 }
+
