@@ -186,11 +186,12 @@ public class filt : MonoBehaviour
         if(fpscnt==30)fpscnt=0;
         
         //Debug.Log(fps);
+        //参考：https://techblog.kayac.com/dynamic-waveform-generation-without-audio-clip
         if (!running)
             return;
 
         int sampleCount = data.Length / channels;
-        for (int i = 0; i < sampleCount; i++) // 必要なサンプル数だけ
+        for (int i = 0; i < sampleCount; i++)
         {
             if(ampa == 1.0F){
                 xv=pxv*4; 
@@ -203,7 +204,7 @@ public class filt : MonoBehaviour
             //Debug.Log(yv);
             float v=neiro0(gain,ampa,Mathf.PI * 2.0F * (float)(phase + i),f,wt);
             
-            for (int c = 0; c < channels; c++) // チャネル分コピー
+            for (int c = 0; c < channels; c++)
             {
                 data[(i * channels) + c] = v;
             }
